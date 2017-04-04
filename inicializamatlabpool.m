@@ -1,14 +1,14 @@
 function inicializamatlabpool()
+% matlabpool ha quedado obsoleto en Matlab 2017. El nuevo comando es parpool.
+% 
+% Unai 04Abr2017
 
-
-
-isOpen=matlabpool ('size')>0;
-if not(isOpen) %Inicializa matlabpool con el máximo numero de cores
-    numWorkers=feature('NumCores'); %Número de workers activos. 
-    if numWorkers>=8
-        numWorkers=8; %Para Matlab 2010b, 8 cores máximo.
-    end
-    disp (['Inicializando matlabpool con ' num2str(numWorkers) ' cores'])
-matlabpool ('open', numWorkers) 
+p=gcp;
+isOpen=numel(p>0);
+if not(isOpen) %No inicializado
+    p=parpool; %El nº máximo de cores se configura en el menú 'Parallel Preferences'
+else %Ya inicializado
+    disp('Parallel pool already started')
 end
+
 

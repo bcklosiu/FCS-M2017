@@ -61,7 +61,7 @@ function gui_anaFCS_OpeningFcn(hObject, eventdata, handles, varargin)
 
 set (hObject, 'CloseRequestFcn' ,@mainFigure_CloseRequestFcn)
 
-cierraFigurasMalCerradas; %Esto lo hace si ha habido un error anterior.
+% cierraFigurasMalCerradas; %Esto lo hace si ha habido un error anterior.
 
 variables.anaFCS_version='6Aug15'; %Esta es la versión del código
 
@@ -765,7 +765,7 @@ if ischar(pathName)
     d=dir([v.path '*.spc']);
     numFiles=numel(d);
     disp (['Decoding ' num2str(numFiles) ' files'])
-    for n=1:numFiles;
+    for n=1:numFiles
         disp ([num2str(numFiles+1-n) ' files left'])
         fileName=d(n).name;
         S.rawFile=[v.path fileName];

@@ -30,14 +30,7 @@ function [FCSdata, imgDecode, imgROI, imgALIN, tPromedioLS, Data_bin, G_interval
 % Actualmente esta función no se usa. Se sustituye por FCS_computecorrelation.
 
 %% 
-isOpen=matlabpool ('size')>0;
-if isOpen==0 %Inicializa matlabpool con el máximo numero de cores
-    numWorkers=feature('NumCores'); %Número de workers activos. 
-    if numWorkers>=8
-        numWorkers=8; %Para Matlab 2010b, 8 cores máximo.
-    end
-matlabpool ('open', numWorkers) 
-end
+inicializamatlabpool();
 
 %%
 [fblock,TACrange,TACgain]=loadFIFO(fname); %Carga en la RAM (como enteros de 32 bits), cada evento del archivo FIFO. Calcula TAC gain y TAC range.
@@ -106,7 +99,7 @@ end %end if isScanningFCS
 dataIntervalos= FCS_troceador(Data_bin, intervalos);
 % G_intervalos= FCS_matriz (dataIntervalos, numSubIntervalosError, deltat_bin, numSecciones, numPuntos, base, tauLagMax, tipoCorrelacion);
 G_intervalos= FCS_matriz (dataIntervalos, numIntervalos, numSubIntervalosError, binFreq, numSecciones, numPuntosSeccion, base, tauLagMax);
-[FCSmean Gmean]=FCS_promedio(G_intervalos, dataIntervalos, [1:intervalos], deltat_bin, tipoCorrelacion);
+[FCSmean, Gmean]=FCS_promedio(G_intervalos, dataIntervalos, 1:intervalos, deltat_bin, tipoCorrelacion);
 
 save ([fname(1:end-4) '.mat'])
 

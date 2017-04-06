@@ -129,7 +129,7 @@ disp (['Average counts per second: ' num2str(cps)])
 %cps(intervalo, canal) - Primero los intervalos, luego los canales
 
 disp(['Correlating ' num2str(size(FCSData, 2)) ' channels at ' num2str(binFreq/1000) ' kHz'])
-[Gintervalos cpsIntervalos]= FCS_matriz (FCSData, numIntervalos, numSubIntervalosError, binFreq, numSecciones, numPuntosSeccion, base, tauLagMax);
+[Gintervalos, cpsIntervalos]= FCS_matriz (FCSData, numIntervalos, numSubIntervalosError, binFreq, numSecciones, numPuntosSeccion, base, tauLagMax);
 usaSubIntervalosError=logical(numSubIntervalosError); %Si numSubIntervalosError>0 entonces usa los subIntervalos para calcular la incertidumbre
 Gmean=FCS_promedio(Gintervalos, 1:numIntervalos, usaSubIntervalosError);
 

@@ -1,4 +1,4 @@
-function [G_AP alfa]=FCS_afterpulsing (G, cps, tau_AP, alfaCoeff, acqChannel)
+function [G_AP,alfa]=FCS_afterpulsing (G, cps, tau_AP, alfaCoeff, acqChannel)
 %
 % [G_AP alfa]=FCS_afterpulsing (G, cps, tau_AP, alfaCoeff)
 % Corrige el afterpulsing dados G, tau_AP y los coeficientes de alfa y tau_AP 

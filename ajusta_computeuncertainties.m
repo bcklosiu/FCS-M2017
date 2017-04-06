@@ -1,4 +1,4 @@
-function [Chi2 deltaParam ymodel] = ajusta_computeuncertainties (FUN, xdata, ydata, yerr, allparam, indparamvariables, jacob_mat)
+function [Chi2, deltaParam, ymodel] = ajusta_computeuncertainties (FUN, xdata, ydata, yerr, allparam, indparamvariables, jacob_mat)
 
 % [Chi2 deltaParam ymodel] = ajusta_computeuncertainties (FUN, xdata, ydata, yerr, allparam, indparamvariables, jacob_mat);
 % Calcula el Chi2 y las incertidumbres de los parámetros ajustados por ajusta_lsqnonlin

@@ -20,7 +20,7 @@ for m=1:numel(d)
     %      Gintervalos_noAP=Gintervalos;
     
     for n=1:numIntervalos
-        [Gintervalos(:,:,n) alfa]=FCS_afterpulsing (Gintervalos_noAP(:, :, n), cpsIntervalos(n,:), tau_AP, alfaCoeff, channel);
+        [Gintervalos(:,:,n),alfa]=FCS_afterpulsing (Gintervalos_noAP(:, :, n), cpsIntervalos(n,:), tau_AP, alfaCoeff, channel);
     end
     
     Gmean=FCS_promedio(Gintervalos, intervalosPromediados, false);

@@ -63,7 +63,7 @@ end
 
 h_fig=figure; 
 
-h_axesRGB=axes; %Handle de los ejes de la figura con el tiempo reducido
+% h_axesRGB=axes; %Handle de los ejes de la figura con el tiempo reducido
 
 imagesc(imgRGBtrasp); axis off
 %a=zeros(numColsIMG, 100); a(10:20, 40:60)=1;

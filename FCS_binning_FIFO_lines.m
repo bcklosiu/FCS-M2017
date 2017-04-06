@@ -41,13 +41,10 @@ desv=std(tLineas);
 lineasValidas=and(tLineas<media+3*desv,tLineas>media-3*desv);
 tPromedioLinea=mean2(tLineas(lineasValidas));
 deltaTBin=multiploLineas*tPromedioLinea;
-binFreq=1/deltaTBin;
+% binFreq=1/deltaTBin;
 
 %% Paralelización (SPMD)
-numWorkers=feature('NumCores'); %Nº de cores 
-if numWorkers>=8
-    numWorkers=8; %Para Matlab 2010b, 8 cores máximo.
-end
+numWorkers=str2double(getenv('NUMBER_OF_PROCESSORS')); %Numer of logical cores
 indLineasIMG=1:multiploLineas:numLineas; %Indices iniciales línea binning
 restoWorkers=rem(numel(indLineasIMG),numWorkers);
 if not(restoWorkers==0) %el nº de líneas debe ser divisible por el nº de cores para paralelizar
@@ -69,7 +66,7 @@ spmd (numWorkers)
             indDesde=parIndLineasIMG(parLine,labindex);
             indHasta=indDesde+multiploLineas-1;
             cuentaPhots=0;
-                for line=indDesde:indHasta,
+                for line=indDesde:indHasta
                     numPhotsTemp=sum(parImgROItemp(line,parLimitesImg5sigma(line,1):parLimitesImg5sigma(line,2)));
                     cuentaPhots=cuentaPhots+numPhotsTemp;
                 end %end for line

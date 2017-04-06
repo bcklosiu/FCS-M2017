@@ -1,4 +1,4 @@
-function [G tdata]=FCCS_crosscorr_2(FCSdata, deltat, vectorindices)
+function [G, tdata]=FCCS_crosscorr_Cpp(FCSdata, deltat, vectorindices)
 %
 % [G tdata]=FCCS_crosscorr(FCSdata, deltat, vectorindices);
 %

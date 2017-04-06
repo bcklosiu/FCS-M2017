@@ -79,10 +79,8 @@ lineasPerdidasCadaFrame=round(difLineSync(indCambioFrameLS(1:end-1))/tPromedioLS
 
 
 %% Paralelización (SPMD)
-numWorkers=feature('NumCores'); %Nº de cores
-    if numWorkers>=8
-        numWorkers=8; %Para Matlab 2010b, 8 cores máximo.
-    end
+numWorkers=str2double(getenv('NUMBER_OF_PROCESSORS')); %Nr. of logical cores
+
 resto=rem(numFilasConPhots,numWorkers);
 if not(resto==0) %el nº de fotones debe ser divisible por numWorkers para paralelizar
     restoDivNumlabs=ones(numWorkers-resto,1);

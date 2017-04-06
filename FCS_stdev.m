@@ -33,7 +33,7 @@ if numCanales>1
     numCanales=3; %Dos canales más la correlación cruzada
 end
 
-[G tdatacorr]= FCS_multitau (FCSData, deltaT, numSecciones, numPuntos, base, tLagMax);
+[G, tdatacorr]= FCS_multitau (FCSData, deltaT, numSecciones, numPuntos, base, tLagMax);
 numPuntosCorrelacion=size(G, 1);
 
 SE=zeros(numPuntosCorrelacion, numCanales);

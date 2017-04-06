@@ -61,7 +61,7 @@ function gui_anaFCS_OpeningFcn(hObject, eventdata, handles, varargin)
 
 set (hObject, 'CloseRequestFcn' ,@mainFigure_CloseRequestFcn)
 
-% cierraFigurasMalCerradas; %Esto lo hace si ha habido un error anterior.
+cierraFigurasMalCerradas; %Esto lo hace si ha habido un error anterior
 
 variables.anaFCS_version='6Aug15'; %Esta es la versión del código
 
@@ -360,9 +360,9 @@ end
 
 
 function cierraFigurasMalCerradas
-h=findobj('CloseRequestFcn',@FigCloseRequestFcn);
+h=findobj('CloseRequestFcn',@FigCloseRequestFcn); %Busca las figuras mal cerradas y obtiene sus propiedades
 set (h, 'CloseRequestFcn', 'closereq')
-if h
+if not(isempty(h))
     disp (['Closing previously opened figures ' num2str(h')])
 end
 close (h)
@@ -386,7 +386,7 @@ S.fittedCurves=pagerangeparser (rangeString, 1, endPage);
 for n=1:numel(S.fittedCurves)
     dataFit(n)=mat2cell(S.Gintervalos(:,:,S.fittedCurves(n)));
 end
-[allParam chi2 dataSetSelection fittingFunction Gmodel]=gui_FCSfit(dataFit, funStr, [], []);
+[allParam, chi2, dataSetSelection, fittingFunction, Gmodel]=gui_FCSfit(dataFit, funStr, [], []);
 
 setappdata (handles.figure1, 'S', S);
 setappdata (handles.figure1, 'v', v);
@@ -404,7 +404,7 @@ else
 end
 [v.h_corrPromedio, v.h_resPromedio, ~, v.h_figPromedio]=FCS_representa_ajuste (S.FCSmean, S.Gmean, [], 1/S.binFreq, S.tipoCorrelacion, 1, v.h_figPromedio);
 
-[allParam chi2 dataSetSelection fittingFunction Gmodel]=gui_FCSfit({S.Gmean}, funStr, v.h_corrPromedio, v.h_resPromedio);
+[allParam, chi2, dataSetSelection, fittingFunction, Gmodel]=gui_FCSfit({S.Gmean}, funStr, v.h_corrPromedio, v.h_resPromedio);
 
 setappdata (handles.figure1, 'v', v);
 
@@ -437,7 +437,7 @@ set (hObject, 'Visible', 'off')
 
 
 
-function [S R]=loadrawphotondata(fname, scannerFreq, handles)
+function [S, R]=loadrawphotondata(fname, scannerFreq, handles)
 %fname debe llevar el path
 %S contiene los datos que guardaremos en el archivo .mat
 %R contiene los datos raw con los que opera
@@ -535,7 +535,7 @@ if S.correctAP
     %Si se corrige el afterpulsing (AP) Gmean se convierte en la corregida y las no corregidas _noAP
     S.Gmean_noAP=S.Gmean;
     S.Gintervalos_noAP=S.Gintervalos;
-    [G_AP Gintervalos_AP alfa]=correctforAP(S.Gintervalos_noAP, S.intervalosPromediados, S.numSubIntervalosError, S.cpsIntervalos, S.tau_AP, S.alfaCoeff, S.channel);
+    [G_AP, Gintervalos_AP, alfa]=correctforAP(S.Gintervalos_noAP, S.intervalosPromediados, S.numSubIntervalosError, S.cpsIntervalos, S.tau_AP, S.alfaCoeff, S.channel);
     S.Gmean=G_AP;
     S.Gintervalos=Gintervalos_AP;
     S.alfa=alfa;
@@ -642,7 +642,7 @@ if ischar(pathName)
     d=dir([v.path nameTailExtension_find]);
     numFiles=numel(d);
     disp (['Saving ' num2str(numFiles) ' files as ASCII'])
-    for n=1:numFiles;
+    for n=1:numFiles
         disp ([num2str(numFiles+1-n) ' files left'])
         fname=d(n).name;
         disp (['Loading ' v.path fname])
@@ -675,7 +675,7 @@ if ischar(FileName)
     if isappdata (handles.figure1, 'R') %R es una struct que contiene el raw data
         rmappdata (handles.figure1, 'R');
     end
-    [S R]=loadrawphotondata(v.fname, v.scannerFreq, handles);
+    [S, R]=loadrawphotondata(v.fname, v.scannerFreq, handles);
     pos=find(v.path=='\', 2, 'last');
     nombreFCSData=['anaFCS - ...' v.fname(pos:end-4)];
     set (handles.figure1, 'Name' , nombreFCSData)
@@ -701,7 +701,7 @@ set (handles.menu_saveAsASCII, 'Enable', 'on')
 
 S=getappdata (handles.figure1, 'S'); %Recupera variables
 R=getappdata (handles.figure1, 'R'); %Recupera variables
-[S.tau_AP S.alfaCoeff S.correctAP]=gui_FCSafterpulsing(S.tau_AP, S.alfaCoeff);
+[S.tau_AP, S.alfaCoeff, S.correctAP]=gui_FCSafterpulsing(S.tau_AP, S.alfaCoeff);
 set (handles.figure1,'Pointer','watch')
 drawnow update
 S=computecorrelation (S, R, handles);
@@ -718,7 +718,7 @@ pathName = uigetdirJava(v.path, 'Choose folder with raw photon data');
 if ischar(pathName)
     answer=inputdlg('Enter name tail that will be added to the filename', 'Filename');
     nameTail=['_' answer{1}];
-    [tau_AP alfaCoeff correctAP]=gui_FCSafterpulsing(S.tau_AP, S.alfaCoeff);
+    [tau_AP, alfaCoeff, correctAP]=gui_FCSafterpulsing(S.tau_AP, S.alfaCoeff);
     set (handles.figure1,'Pointer','watch')
     drawnow update
     v.path=[pathName '\'];
@@ -726,11 +726,11 @@ if ischar(pathName)
     d=dir([v.path '*_raw.mat']);
     numFiles=numel(d);
     disp (['Correlating ' num2str(numFiles) ' files'])
-    for n=1:numFiles;
+    for n=1:numFiles
         disp ([num2str(numFiles+1-n) ' files left'])
         fname=d(n).name;
         disp (['Loading ' v.path fname])
-        [S R]=loadrawphotondata([v.path fname], v.scannerFreq, handles);
+        [S, R]=loadrawphotondata([v.path fname], v.scannerFreq, handles);
         S.correctAP=correctAP;
         S.tau_AP=tau_AP;
         S.alfaCoeff=alfaCoeff;
@@ -814,7 +814,7 @@ v=getappdata (handles.figure1, 'v'); %Recupera variables
 S=getappdata (handles.figure1, 'S');
 fname
 [S.tau_AP,S.alfaCoeff]=gui_FCSafterpulsing;
-[S.G_AP S.alfa]=FCS_afterpulsing (S.Gmean, S.cps, S.tau_AP, S.alfaCoeff);
+[S.G_AP, S.alfa]=FCS_afterpulsing (S.Gmean, S.cps, S.tau_AP, S.alfaCoeff);
 %save
 
 setappdata(handles.figure1, 'S', S); %Guarda los cambios en variabl
@@ -825,10 +825,10 @@ S.alfaCoeff=[];
 S.correctAP=false;
 S.version=1; %Esta es la versión de los ficheros matlab en los que se guardan las imágenes, etc.
 
-function [Gmean Gintervalos alfa]=correctforAP(Gintervalos_noAP, intervalosPromediados, numSubIntervalosError, cpsIntervalos, tau_AP, alfaCoeff, acqChannel)
+function [Gmean, Gintervalos, alfa]=correctforAP(Gintervalos_noAP, intervalosPromediados, numSubIntervalosError, cpsIntervalos, tau_AP, alfaCoeff, acqChannel)
 %Corrige todos los Gintervalos
 for intervalo=1:size(Gintervalos_noAP, 3)
-    [Gintervalos(:,:,intervalo) alfa]=FCS_afterpulsing (Gintervalos_noAP(:, :, intervalo), cpsIntervalos(intervalo,:), tau_AP, alfaCoeff, acqChannel);
+    [Gintervalos(:,:,intervalo), alfa]=FCS_afterpulsing (Gintervalos_noAP(:, :, intervalo), cpsIntervalos(intervalo,:), tau_AP, alfaCoeff, acqChannel);
 end
 %Pero sólo promedia para los indicados en intervalosPromediados
 Gmean=FCS_promedio(Gintervalos, intervalosPromediados, logical(numSubIntervalosError));

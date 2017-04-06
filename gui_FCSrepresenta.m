@@ -50,7 +50,7 @@ variables.showing=variables.intervalosPromediados(1); %Este es el intervalo que 
 set (handles.edit_showingCurve, 'String', num2str(variables.showing))
 
 
-[variables.hinf variables.hsup variables.hfig]=...
+[variables.hinf, variables.hsup, variables.hfig]=...
     FCS_representa (variables.FCSIntervalos(:, :,variables.showing), variables.tTraza, variables.GIntervalos(:, :, variables.showing), variables.cps, variables.tipoCorrelacion, variables.hfig);
 set (variables.hfig, 'Visible', 'on', 'NumberTitle', 'off', 'Name', ['Curve: ' num2str(variables.showing)])
 setappdata (handles.figure1, 'v', variables);  %Convierte v en datos de la aplicación con el nombre v
@@ -91,7 +91,7 @@ v=getappdata (handles.figure1, 'v'); %Recupera variables
 v.showing=v.showing-1;
 if v.showing>v.intervalosPromediados(1)-1
     set (handles.edit_showingCurve, 'String', num2str(v.showing))
-    [v.hinf v.hsup v.hfig]=...
+    [v.hinf, v.hsup, v.hfig]=...
         FCS_representa (v.FCSIntervalos(:, :,v.showing), v.tTraza, v.GIntervalos(:, :, v.showing), v.cps, v.tipoCorrelacion, v.hfig);
     set (v.hfig, 'NumberTitle', 'off', 'Name', ['Curve: ' num2str(v.showing)])
 else
@@ -111,7 +111,7 @@ v=getappdata (handles.figure1, 'v'); %Recupera variables
 v.showing=v.showing+1;
 if v.showing<v.intervalosPromediados(end)+1
     set (handles.edit_showingCurve, 'String', num2str(v.showing))
-    [v.hinf v.hsup v.hfig]=...
+    [v.hinf, v.hsup, v.hfig]=...
         FCS_representa (v.FCSIntervalos(:, :,v.showing), v.tTraza, v.GIntervalos(:, :, v.showing), v.cps, v.tipoCorrelacion, v.hfig);
     set (v.hfig, 'NumberTitle', 'off', 'Name', ['Curve: ' num2str(v.showing)])
 else

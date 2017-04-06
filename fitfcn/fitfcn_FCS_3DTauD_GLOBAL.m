@@ -1,4 +1,4 @@
-function G=fitfcn_FCS_3DTauD (param, indParam, x)
+function G=fitfcn_FCS_3DTauD_GLOBAL (param, indParam, x)
            
 % G=fitfcn_FCS_3DTauD (param, tdata)
 % Función de autocorrelación con un modelo de difusion 3D single photon 

@@ -23,7 +23,7 @@ imgInSum1=sum(imgIN,1); %Suma las filas de imgIN SIN ordenar
 indMaximgInSum1=find(imgInSum1==max(imgInSum1)); %Indice del máximo de la suma total
 indMaxLine1=find(imgIN(1,:)==max(imgIN(1,:))); % Indice del máximo de la linea 1
 if size(indMaxLine1,2)>1 %Si hay más de un máximo en la línea, cogemos el que más cerca esté del máximo total
-    [difMinLine1, indMaxLine1_2]=min(abs(indMaxLine1-indMaximgInSum1));
+    [~, indMaxLine1_2]=min(abs(indMaxLine1-indMaximgInSum1));
     indMaxLine1=indMaxLine1(indMaxLine1_2);
 end
 indMaxCadaLinea(1,1)=indMaxLine1;
@@ -31,7 +31,7 @@ indMaxCadaLinea(1,1)=indMaxLine1;
 for m1=2:numLines %Busca el máximo de cada línea
     indMaxLinem1=find(imgIN(m1,:)==max(imgIN(m1,:))); % Indice del máximo de cada línea
     if size(indMaxLinem1,2)>1 %Si hay más de un máximo en la línea, cogemos el que más cerca esté del máximo total
-        [difMinLinem1, indMaxLinem1_2]=min(abs(indMaxLinem1-indMaximgInSum1)); 
+        [~, indMaxLinem1_2]=min(abs(indMaxLinem1-indMaximgInSum1)); 
         indMaxLinem1=indMaxLinem1(indMaxLinem1_2);
     end
     indMaxCadaLinea(m1,1)=indMaxLinem1;

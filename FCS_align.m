@@ -23,13 +23,13 @@ if numCanales>1
     switch option
         case 3 %Suma de canales. 
             imgROIsuma=imgROI(:,:,1)+imgROI(:,:,2);
-            [imgALIN, sigma2_5, indMaxCadaLinea]=FCS_membraneAlignment_space(imgROIsuma);
+            [~ , sigma2_5, indMaxCadaLinea]=FCS_membraneAlignment_space(imgROIsuma);
         otherwise
-            [imgALIN, sigma2_5, indMaxCadaLinea]=FCS_membraneAlignment_space(imgROI(:,:,option));
+            [~, sigma2_5, indMaxCadaLinea]=FCS_membraneAlignment_space(imgROI(:,:,option));
     end
     
 else %numCanales=1;
-    [imgALIN, sigma2_5, indMaxCadaLinea]=FCS_membraneAlignment_space(imgROI);
+    [~, sigma2_5, indMaxCadaLinea]=FCS_membraneAlignment_space(imgROI);
 end
  
 % switch option

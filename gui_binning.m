@@ -64,7 +64,7 @@ set(handles.tf_edit, 'String', tMax)
 set(handles.binFreq_edit, 'String', 1)
 set(handles.channel_edit, 'String', channels(1))
 ylabel(handles.binning_plot,'Counts'); xlabel(handles.binning_plot,'t(s)');
-if numel(channels)==1,
+if numel(channels)==1
     set(handles.channel_edit, 'enable', 'off')    
 end
 vGlobs=struct('tMax',tMax,'channels',channels,'fcsData',pat) ;% variables globales
@@ -194,7 +194,7 @@ function calculateBinning_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 calculate=get(hObject,'Value');
-if calculate==1,
+if calculate==1
 % Carga las variables de las "edit text" de la GUI    
     t0=str2double(get(handles.t0_edit,'String'));
     tf=str2double(get(handles.tf_edit,'String'));

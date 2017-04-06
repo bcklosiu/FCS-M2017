@@ -83,10 +83,7 @@ numValidEvents=numel(find(bitand(fblock,INVALID32)==0)); %Number of valid events
 data_MacroMicroTime=zeros(numValidEvents, 2, 'double');
 data_channel=zeros(numValidEvents,1,'uint8');
 lineEventcounter=0;
-numWorkers=feature('NumCores'); %Number of active workers. 
-if numWorkers>=8
-    numWorkers=8; %For Matlab 2010b, 8 workers maximum.
-end %end if (numWorkers)
+numWorkers=str2double(getenv('NUMBER_OF_PROCESSORS')); %Nr. of logical cores
 
 %% First event
 event1=fblock(1);
@@ -95,10 +92,10 @@ foundFrame = find(bitand(fblock,F_MARK32) == F_MARK32); %Frame events in fblock
 foundLine = find(bitand(fblock,L_MARK32) == L_MARK32); %Line events in fblock
 
 %% Identify the acquisition type
-if not(and(isempty(foundFrame),isempty(foundLine))); %FIFO Image or Scanning FCS
+if not(and(isempty(foundFrame),isempty(foundLine))) %FIFO Image or Scanning FCS
     firstFrame=foundFrame(1);       %First frame mark in fblock
     numLines=numel(find(bitand(fblock(firstFrame:foundFrame(2)),L_MARK32) == L_MARK32));     %Nr. of lines in 1 frame
-    if numLines<530, %FIFO Image
+    if numLines<530 %FIFO Image
         acqType=1;
     else    %Scanning FCS
         acqType=2;
@@ -157,7 +154,7 @@ switch acqType
         numLinesTotal=1;
         numPixels=2;
         numPixelTotal=1;
-        if not(isempty(numPixelPoint)), %Remove the extra pixels (in case of coded scanner movement at the end of acquisition) 
+        if not(isempty(numPixelPoint)) %Remove the extra pixels (in case of coded scanner movement at the end of acquisition) 
             fblock(numPixelPoint+1)=[];
             forTo=size(fblock,1);
         end %end if(not(isempty(numPixelPoint)))
@@ -186,7 +183,7 @@ spmd (numWorkers)
     parFrame=fblockCutcell{labindex}; 
     parNumValidEvents=numel(find(bitand(parFrame,INVALID32)==0));
     %Nr. of photons per worker
-    if acqType<3, %not FIFO Point
+    if acqType<3 %not FIFO Point
         parData_frameLinePixel=zeros(parNumValidEvents,3,'uint32');
     end
     parData_MacroMicroTime=zeros(parNumValidEvents,2,'double');
@@ -225,7 +222,7 @@ spmd (numWorkers)
                     parFrameSync_t(currentFrame)=frameStart;
                 end %end if (newframe_event)
                 if newline_event==L_MARK32 %line clock
-                    if currentLine < (numLines+1);
+                    if currentLine < (numLines+1)
                         currentLine = currentLine + 1;
                         lineEventcounter=lineEventcounter+1;
                         currentPixel=0;
@@ -262,7 +259,7 @@ spmd (numWorkers)
                 channel=uint8(bitshift(bitand(parEventdata,ROUT32),-12)); % Routing channel 
                 parData_MacroMicroTime(photonCount,:)=[photonMacroTime, photonMicroTime];
                 parData_channel(photonCount)=channel;
-                if acqType<3, %not FIFO Point
+                if acqType<3 %not FIFO Point
                     parData_frameLinePixel(photonCount,:)=[currentFrame, currentLine, currentPixel]; 
                 end
                 
@@ -276,14 +273,14 @@ spmd (numWorkers)
                 channel=double(bitshift(bitand(parEventdata,ROUT32),-12)); %Routing channel 
                 parData_MacroMicroTime(photonCount,:)=[photonMacroTime, photonMicroTime];
                 parData_channel(photonCount,:)=channel;
-                if acqType<3, %not FIFO Point
+                if acqType<3 %not FIFO Point
                     parData_frameLinePixel(photonCount,:)=[currentFrame, currentLine, currentPixel];
                 end
                 
         end     %end switch(event_adcM)
     end     % end for(bb)
     
-    if acqType<3, %not FIFO Point
+    if acqType<3 %not FIFO Point
         parData_frameLinePixel(photonCount+1:end,:)=[]; %Remove empty rows in parData_frameLinePixel (if any)
     end
         parData_MacroMicroTime(photonCount+1:end,:)=[]; %Remove empty rows in parData_MacroMicroTime (if any)
@@ -307,7 +304,7 @@ for aa2=1:numWorkers
     data_MacroMicroTime(indPhotFrom:indPhotTo,1)=dataLab_MacroMicroTime(:,1)+sumaMToffset;
     data_MacroMicroTime(indPhotFrom:indPhotTo,2)=dataLab_MacroMicroTime(:,2);
     data_channel(indPhotFrom:indPhotTo,:)=dataLab_channel;
-    if acqType<3, %not FIFO Point
+    if acqType<3 %not FIFO Point
         dataLab_frameLinePixel=parData_frameLinePixel{aa2};
         data_frameLinePixel(indPhotFrom:indPhotTo,1)=dataLab_frameLinePixel(:,1)+sumaFrameCores;
         data_frameLinePixel(indPhotFrom:indPhotTo,2:3)=dataLab_frameLinePixel(:,2:3);
@@ -326,7 +323,7 @@ dif_channels=(acqChannels-uint8(0:1:nr_RoutChannels-1)'); %Difference between th
 %The acquisition channels may not be consecutive. The following if loop affects the initialisation of twoDIntensity. To avoid more Z planes than expected.
 if(not(isempty(find(dif_channels~=0, 1)))) 
     data_channel_sort=zeros(size(data_channel),'uint8');
-    for ch=1:nr_RoutChannels,
+    for ch=1:nr_RoutChannels
         indChannel=data_channel==acqChannels(ch);
         data_channel_sort(indChannel)=ch-1;
     end %end for(ch)

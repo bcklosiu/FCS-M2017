@@ -1,4 +1,4 @@
-function G=FCS_gauss2DG0 (param, tdata)
+function G=fitfcn_FCS_gauss2DG0 (param, tdata)
 
 % G=FCS_gauss2DG0 (param, tdata);
 % Función de autocorrelacion con un modelo de difusion 2D single photon y haz gaussiano

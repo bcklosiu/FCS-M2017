@@ -1,4 +1,4 @@
-function [tdata matrizIndices indicesNOrepe numPuntosNOrepe]=FCS_calculaPuntosCorrelacionRepe (numSecciones, base, numPuntosSeccion, deltaT, tLagMax)
+function [tdata, matrizIndices, indicesNOrepe, numPuntosNOrepe]=FCS_calculaPuntosCorrelacionRepe (numSecciones, base, numPuntosSeccion, deltaT, tLagMax)
 
 % [tdata matrizIndices indicesNOrepe numPuntosNOrepe]=FCS_calculaPuntosCorrelacionRepe(numSecciones, base, numPuntosSeccion, deltaT, tLagMax);
 % 

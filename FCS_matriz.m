@@ -1,4 +1,4 @@
-function [M cpsIntervalos]= FCS_matriz (FCSData, numIntervalos, numSubIntervalosError, binFreq, numSecciones, numPuntosSeccion, base, tauLagMax)
+function [M, cpsIntervalos]= FCS_matriz (FCSData, numIntervalos, numSubIntervalosError, binFreq, numSecciones, numPuntosSeccion, base, tauLagMax)
 
 %[M cpsIntervalos]= FCS_matriz (FCSData, numIntervalos, numSubIntervalosError, binFreq, numSecciones, numPuntosSeccion, base, tauLagMax)
 % Genera las curvas de correlación en forma de matriz bi o tridimensional, dependiendo de los intervalos en que hayamos dividido la traza temporal.
@@ -44,7 +44,7 @@ end
 M=zeros(numPuntosCorrFinal, numColumnasM, numIntervalos, 'double');
 cpsIntervalos=zeros(numIntervalos, numCanales, 'double');
 
-for intervalo=1:numIntervalos, 
+for intervalo=1:numIntervalos
     FCSintervalo=FCSData((intervalo-1)*numDataIntervalos+1:intervalo*numDataIntervalos, :);
     if not(isfloat(FCSintervalo)) %De esta forma lo único que es double es la parte con la que hace el subbinning
         FCSintervalo=double(FCSintervalo);

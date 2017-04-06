@@ -1,4 +1,4 @@
-function M= FCS_stdev (FCSData, numSubIntervalosError, deltaT, numSecciones, numPuntos, base, tLagMax)
+function M= FCS_stdev_old (FCSData, numSubIntervalosError, deltaT, numSecciones, numPuntos, base, tLagMax)
 
 %  A partir del 24Abr15 aquí quito las referencias a la g normalizada en FCS_stdev
 %
@@ -40,7 +40,7 @@ if numSubIntervalosError<2
     numSubIntervalosError=1;
 end
 
-[G tdatacorr]= FCS_multitau  (FCSData, deltaT, numSecciones, numPuntos, base, tLagMax);
+[G, tdatacorr]= FCS_multitau  (FCSData, deltaT, numSecciones, numPuntos, base, tLagMax);
 numPuntosCorrelacion=size(G, 1);
 
 SD=zeros(numPuntosCorrelacion, numColumnasG);

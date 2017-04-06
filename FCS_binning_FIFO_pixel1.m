@@ -30,14 +30,14 @@ numFotCh=zeros(nrChannels, 1); %Número de fotones de cada canal
 
 %Necesito primero calcular cuántos fotones hay por canal. ¿Esto se puede
 %simplificar para no tener que repetir el find y la comparación?
-for cc=1:nrChannels, %Identifica los fotones de cada canal
+for cc=1:nrChannels %Identifica los fotones de cada canal
     indsxCh=arrivalTimes_c==channels(cc);
     numFotCh(cc)=numel(find(indsxCh==1));
 end 
 
 numFotonesMaximoCanal=max(numFotCh(:));
 data=zeros(numFotonesMaximoCanal, nrChannels); %Matriz de tiempos por canal
-for cc=1:nrChannels, %Identifica los fotones de cada canal
+for cc=1:nrChannels %Identifica los fotones de cada canal
     indsxCh=arrivalTimes_c==channels(cc);
     numFotCh(cc)=numel(find(indsxCh==1));
     data(1:numFotCh(cc), cc)=arrivalTimes_MTmT(indsxCh,1)+arrivalTimes_MTmT(indsxCh,2)-t0; %MT+mT-tiempo referencia
@@ -45,7 +45,7 @@ end %end for (cc)
    
 MTmax=max(data(:)); %MT del último fotón válido
 numfildataBin=MTmax/(deltaTBin); %Nro. de filas de dataBin
-if rem(MTmax,deltaTBin)==0,
+if rem(MTmax,deltaTBin)==0
     dimDataBin=ceil(numfildataBin)+1;
 else 
     dimDataBin=ceil(numfildataBin);

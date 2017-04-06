@@ -1,4 +1,4 @@
-function [G tdata]= FCS_multitau (FCSData, deltaT, numSecciones, numPuntosSeccion, base, tLagMax)
+function [G, tdata]= FCS_multitau (FCSData, deltaT, numSecciones, numPuntosSeccion, base, tLagMax)
 %
 % [G  tdata]= FCS_multitau (FCSData, deltaT, numSecciones, numPuntos, base, tLagMax, tipoCorrelacion);
 % Algorimo multitau para el cálculo de la función de autocorrelación/correlacion cruzada
@@ -28,7 +28,7 @@ numData=size(FCSData, 1);
 
 %Calcula todos los puntos de cada sección en los que hará la correlación
 %para evitar los puntos repetidos por sección
-[tdataTodos matrizIndices indicesNOrepe numPuntosCorrFinal]=FCS_calculaPuntosCorrelacionRepe (numSecciones, base, numPuntosSeccion, deltaT, tLagMax);
+[tdataTodos, matrizIndices, indicesNOrepe, numPuntosCorrFinal]=FCS_calculaPuntosCorrelacionRepe (numSecciones, base, numPuntosSeccion, deltaT, tLagMax);
 %Hace la correlación
 
 numCanales=size(FCSData, 2);
@@ -60,7 +60,7 @@ for seccion=1:numSecciones %Hace una correlación por cada sección
                 FCSDataSeccion(n)=sum(FCSData(((n-1)*multiBase+1:n*multiBase))); % Cuando es una autocorrelación
             end
         %}
-        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
             FCS_autocorr_Cpp (FCSDataSeccion, multiBase*deltaT, vectorIndices);
     else %Correlación cruzada
         FCSDataSeccion=zeros (numDataSeccion, 2, 'double');
@@ -71,11 +71,11 @@ for seccion=1:numSecciones %Hace una correlación por cada sección
                 FCSDataSeccion(n, 2)=sum(FCSData(((n-1)*multiBase+1:n*multiBase), 2));
             end
         %}
-        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 1) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 1), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
             FCS_autocorr_Cpp (FCSDataSeccion(:,1), multiBase*deltaT, vectorIndices);
-        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 2) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 2), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
             FCS_autocorr_Cpp (FCSDataSeccion(:,2), multiBase*deltaT, vectorIndices);
-        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 3) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+        [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 3), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
             FCCS_crosscorr_Cpp (FCSDataSeccion, multiBase*deltaT, vectorIndices);
         
     end
@@ -90,14 +90,14 @@ seccion=seccion+1;
 vectorIndices=matrizIndices(indicesNOrepe(:, seccion), seccion);
 numPuntosCorrSeccion=numel(vectorIndices);
 if numCanales==1
-    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
         FCS_autocorr_Cpp(FCSDataSeccion, multiBase*deltaT, vectorIndices);
 else
-    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 1) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 1), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
         FCS_autocorr_Cpp (FCSDataSeccion(:,1), multiBase*deltaT, vectorIndices);
-    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 2) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 2), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
         FCS_autocorr_Cpp (FCSDataSeccion(:,2), multiBase*deltaT, vectorIndices);
-    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 3) tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
+    [G(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion, 3), tdata_corr(1+numPuntosCorrAcumula:numPuntosCorrAcumula+numPuntosCorrSeccion)]=...
         FCCS_crosscorr_Cpp (FCSDataSeccion, multiBase*deltaT, vectorIndices);
 end
 

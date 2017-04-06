@@ -1,4 +1,4 @@
-function [G tdata]=FCS_autocorr(FCSdata, deltat, vectorindices)
+function [G, tdata]=FCS_autocorr_Matlab(FCSdata, deltat, vectorindices)
 % 
 % [G tdata]=FCS_autocorr(FCSdata, deltat, vectorindices);
 % Calcula la autocorrelación siguiendo el artículo de WOHL01
@@ -16,13 +16,13 @@ function [G tdata]=FCS_autocorr(FCSdata, deltat, vectorindices)
 %FCSdata=double(FCSdata);
 numdata=numel(FCSdata);
 Gtemp=zeros (numdata, 1, 'double');
-Gtempcuadrados=zeros (numdata, 1, 'double');
+% Gtempcuadrados=zeros (numdata, 1, 'double');
 numpuntos=numel(vectorindices);
 G=zeros(numpuntos,1,'double');
 %sigmaG=zeros(numpuntos,1,'double');
 tdata=zeros (numpuntos, 1); 
 for n=1:numpuntos
-   m=vectorindices(n)
+   m=vectorindices(n);
         Gtemp(1:numdata-m)=FCSdata(1:numdata-m).*FCSdata(1+m:numdata);
         %size(Gtemp)
         sumGtemp=sum(Gtemp(1:numdata-m));

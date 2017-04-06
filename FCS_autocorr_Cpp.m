@@ -1,4 +1,4 @@
-function [G tdata]=FCS_autocorr(FCSdata, deltat, vectorindices)
+function [G, tdata]=FCS_autocorr_Cpp(FCSdata, deltat, vectorindices)
 % 
 % [G tdata]=FCS_autocorr(FCSdata, deltat, vectorindices);
 % Calcula la autocorrelación siguiendo el artículo de WOHL01

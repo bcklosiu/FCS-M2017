@@ -6,7 +6,7 @@ function inicializamatlabpool()
 p=gcp;
 isOpen=numel(p>0);
 if not(isOpen) %No inicializado
-    p=parpool; %El nº máximo de cores se configura en el menú 'Parallel Preferences'
+    parpool; %El nº máximo de cores se configura en el menú 'Parallel Preferences'
 else %Ya inicializado
     disp('Parallel pool already started')
 end

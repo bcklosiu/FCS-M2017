@@ -395,7 +395,7 @@ UB=[];
 %Falta definir el intervalo de ajuste v.int_ajuste
 
 for n=1:numParam
-    [guess LB UB numparamvariables numparamfijos indparamvariables indparamfijos valorparamfijos]=...
+    [guess, LB, UB, numparamvariables, numparamfijos, indparamvariables, indparamfijos, valorparamfijos]=...
         check_fijoovariable (paramlibre(n), valorparametro(n), n, guess, LB, UB, valorLB(n), valorUB(n), numparamvariables, numparamfijos, indparamvariables, indparamfijos, valorparamfijos);
 end
 
@@ -403,7 +403,7 @@ end
 [fitparam, allParam, resnorm, resfun, EXITFLAG, OUTPUT, LAMBDA, jacob_mat]...
     = ajusta_lsqnonlin(FUN, guess, LB ,UB ,[], xdata, ydata, yerr, indparamvariables, indparamfijos, valorparamfijos);
 
-[chi2 deltaParamFit ymodel] = ajusta_computeuncertainties (FUN, xdata, ydata, yerr, allParam, indparamvariables, jacob_mat); %Simplemente calcula el modelo y las incertidumbres del ajuste
+[chi2, deltaParamFit, ymodel] = ajusta_computeuncertainties (FUN, xdata, ydata, yerr, allParam, indparamvariables, jacob_mat); %Simplemente calcula el modelo y las incertidumbres del ajuste
 
 deltaAllParam=zeros(1, numParam);
 deltaAllParam(paramlibre)=deltaParamFit;

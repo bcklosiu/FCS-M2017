@@ -55,15 +55,7 @@ numSubIntervalosError=varargin{8};
 tipoCorrelacion=varargin{9};
 
 % Es esto necesario? No parece que lo esté usando
-isOpen=matlabpool ('size')>0;
-if not(isOpen) %Inicializa matlabpool con el máximo numero de cores
-    numWorkers=feature('NumCores'); %Número de workers activos. 
-    if numWorkers>=8
-        numWorkers=8; %Para Matlab 2010b, 8 cores máximo.
-    end
-    disp (['Inicializando matlabpool con ' num2str(numWorkers) ' cores'])
-matlabpool ('open', numWorkers) 
-end
+inicializamatlabpool();
 
 photonArrivalTimes_flp=photonArrivalTimes.frameLinePixel;
 photonArrivalTimes_MTmT=photonArrivalTimes.MacroMicroTime;
@@ -84,11 +76,11 @@ if isScanning
     lineSync_fl=lineSync.frameLine;
     pixelSync_flp=pixelSync.frameLinePixel;
     lineSync_fl_ROI=lineSync_fl(indLinesLS,2);
-    roiFilaDesde=min(lineSync_fl_ROI) %Límite inferior de las filas de la ROI
-    roiFilaHasta=max(lineSync_fl_ROI) %Límite superior de las filas de la ROI
+    roiFilaDesde=min(lineSync_fl_ROI); %Límite inferior de las filas de la ROI
+    roiFilaHasta=max(lineSync_fl_ROI); %Límite superior de las filas de la ROI
     pixelSync_flp_ROI=pixelSync_flp(and(pixelSync_flp(:,2)>=roiFilaDesde, pixelSync_flp(:,2)<=roiFilaHasta),3);
-    roiColDesde=min(pixelSync_flp_ROI) %Límite inferior de las columnas de la ROI
-    roiColHasta=max(pixelSync_flp_ROI) %Límite superior de las columnas de la ROI
+    roiColDesde=min(pixelSync_flp_ROI); %Límite inferior de las columnas de la ROI
+    roiColHasta=max(pixelSync_flp_ROI); %Límite superior de las columnas de la ROI
     imgROIcolumnas=imgDecode(:,roiColDesde:roiColHasta);
     [FCSData, deltaTBin]=FCS_binning_FIFO_lines(imgROIcolumnas, lineSync, indLinesLS, indMaxCadaLinea, sigma2_5, multiploLineas); % Binning temporal de imgBIN, en múltiplos de línea de la imagen
     
@@ -112,7 +104,7 @@ end %end if isSCanningFCS
 
 FCSintervalos= FCS_troceador(FCSData, numIntervalos);
 Gintervalos= FCS_matriz (FCSintervalos, numIntervalos, numSubIntervalosError, binFreq, numSecciones, numPuntosSeccion, base, tauLagMax);
-[FCSmean Gmean]=FCS_promedio(Gintervalos, FCSintervalos, 1:numIntervalos, deltaTBin, tipoCorrelacion);
+[FCSmean, Gmean]=FCS_promedio(Gintervalos, FCSintervalos, 1:numIntervalos, deltaTBin, tipoCorrelacion);
 tData=(1:size(FCSintervalos, 1))/binFreq;
 
 if isScanning
